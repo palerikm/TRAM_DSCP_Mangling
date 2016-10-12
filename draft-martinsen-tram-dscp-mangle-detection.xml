@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-martinsen-tram-dscp-mangle-detection-latest"
+<rfc category="exp" docName="draft-martinsen-tram-dscp-mangle-detection-latest"
      ipr="trust200902">
   <front>
     <title abbrev="DSCP mangle detection">DSCP mangle detection</title>
@@ -49,7 +49,7 @@
     <abstract>
       <t>
         This document describes a mechanism for an endpoint to
-        measure if the network "mangles" DSCP values. 
+        detect DSCP "mangling" by the network path. 
       </t>
     </abstract>
   </front>
@@ -111,10 +111,8 @@
       </t>
 
       <section anchor="new_attribute" 
-               title="TRANSACTION_TRANSMIT_COUNTER attribute">
-        <t>
-          Yabadoo
-        </t>
+               title="DSCP VALUE attribute">
+    
         <t>
           The IANA assigned STUN type for the new attribute is TBD-CA.
         </t>
