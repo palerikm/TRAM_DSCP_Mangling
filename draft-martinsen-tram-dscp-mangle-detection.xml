@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<rfc category="std" docName="draft-martinsen-tram-dscp-mangle-detection-latest"
+     ipr="trust200902">
+  <front>
+    <title abbrev="DSCP mangle detection">DSCP mangle detection</title>
+   
+   <author fullname="Paal-Erik Martinsen" initials="P.E" surname="Martinsen">
+      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+      <address>
+        <postal>
+          <street>Philip Pedersens vei 22</street>
+          <city>Lysaker</city>
+          <region>Akershus</region>
+          <code>1325</code>
+          <country>Norway</country>
+        </postal>
+        <email>palmarti@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Suhas Nandakumar" initials="S." surname="Nandakumar">
+      <organization abbrev="Cisco">Cisco Systems, Inc.</organization>
+      <address>
+        <postal>
+          <street>170 West Tasman Drive</street>
+          <city>San Jose</city>
+          <region>California</region>
+          <code>95134</code>
+          <country>USA</country>
+        </postal>
+        <email>snandaku@cisco.com</email>
+      </address>
+    </author>
+
+    <date/>
+    <workgroup>TRAM</workgroup>
+
+    <abstract>
+      <t>
+        This document describes a mechanism for an endpoint to
+        measure if the network "mangles" DSCP values. 
+      </t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section anchor="introduction" title="Introduction">
+      <t>
+        In some use-cases is useful to know if the network path changes
+        the DSCP/TOS values in the IP header.
+      </t>
+      <t>
+        This document introduces a new STUN attribute that can carry
+        the original DSCP/TOS values. This enables the remote receiver
+        to compare the values in the IP header and the STUN attribute
+        to detect mangling. 
+      </t>
+      <t>
+        The information in the STUN attribute is probably of little
+        interest for the remote receiver. The main use case is to
+        collect metrics regarding how often DSCP values are mangled.  
+      </t>
+      <t>
+        ICE could potentially also use this information to prefer
+        paths with intact DSCP markings.
+      </t>
+      <t>
+        (Just assigning a attribute from IANA is possible, but we
+        thought it was better to have a draft describing the attribute
+        so everyone knows what it is)
+      </t>
+
+    </section>
+
+    <section anchor="notation" title="Notational Conventions">
+      <t>
+        The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+        NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+        "OPTIONAL" in this document are to be interpreted as described
+        in <xref target="RFC2119"></xref>.
+      </t>
+      <t>
+        This specification uses terminology defined in <xref
+        target="RFC5245">ICE</xref> And STUN <xref
+        target="RFC5389"></xref>.
+      </t>
+    </section>
+
+    <section anchor="alg_over"
+             title="Detecting DSCP mangling">
+      
+      <t>
+        Both ICE <xref target="RFC5245">ICE</xref> connectivity checks
+        and TURN <xref target="RFC5766">ICE</xref> allocations can
+        benefit from detecting if the DSCP bits survives the rough
+        journey across the Internet ocean.
+      </t>
+      <t>
+        Epsum and so on
+      </t>
+
+      <section anchor="new_attribute" 
+               title="TRANSACTION_TRANSMIT_COUNTER attribute">
+        <t>
+          Yabadoo
+        </t>
+        <t>
+          The IANA assigned STUN type for the new attribute is TBD-CA.
+        </t>
+        <t>
+          The format of the value in DSCP_VALUE
+          attribute in the request is:
+        </t>
+        <t>
+          <figure anchor="Figure1"
+                  title="DSCP_VALUE attribute ">
+            <artwork align="left"><![CDATA[
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    | Tx DSCP Value | Rx DSCP Value |          Reserverd            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    
+             ]]></artwork>
+          </figure>
+        </t>
+        <t>
+          The fields is described below:
+        </t>
+        <t>
+          <list style="hanging">
+            <t hangText="Tx DSCP value:">The DSCP/TOS field value if the
+            IP header carrying the transmitted STUN packet. 
+            </t>
+            <t hangText="Rx DSCP value:">The DSCP/DOS field value if the
+            IP header in received STUN packet on the same 5-tuple. 
+            </t>
+          </list>
+        </t>
+        <t>
+          The padding is necessary to hit the 32-bit boundary needed
+          for STUN attributes. The padding bits are ignored, but to
+          allow for future reuse of these bits they MUST be set to 0.
+        </t>
+      </section>
+        
+      <section title="Usage in Requests">
+        <t>
+          When sending a STUN request in sets the Tx DSCP value field
+          to the same value as the DSCP/TOS field in the IP header of
+          the packet that is going to carry the STUN request. The Rx
+          DSCP value MUST be set to 0. 
+        </t>
+          
+      </section>
+
+      <section title="Usage in Responses">
+        <t>
+          This attribute MUST only be added to the response if it was
+          present in the request.
+        </t>
+        <t>
+          The Tx DSCP value field is populated with the value of the
+          DSCP/TOS field of the IP packet carrying the STUN
+          response. the Rx DSCP value is populated with the value from
+          the DSCP/TOS field from the packet carrying the original
+          receiving STUN request. 
+        </t>
+
+      </section>
+
+      <section anchor="example_operation" title="Example Operation">
+        <t>
+          When a client receives the response it can compare the
+          values of in the DSCP_VALUE attribute with values from the
+          IP socket. The results could be used to detect and collect
+          metrics regarding DSCP "survivability" on the Internet. It
+          could possible also influence ICE path decisions.  
+        </t>
+        
+      </section>
+    </section>
+
+    <section title="IANA Considerations">
+      <t>[Paragraphs in braces should be removed by the RFC Editor
+      upon publication]</t>
+
+      <t>[The TRANSACTION_TRANSMIT_COUNTER attribute requires that IANA
+      allocate a value in the "STUN attributes Registry" from the
+      comprehension-optional range (0x8000-0xBFFF), to be replaced for
+      TBD-CA throughout this document]</t>
+
+      <t>This document defines the DSCP_VALUE STUN attribute,
+      described in <xref target="alg_over"></xref>. IANA has allocated
+      the comprehension-optional code-point TBD-CA for this
+      attribute.</t>
+    </section>
+
+    <section anchor="security" title="Security Considerations">
+      <t>
+        Security considerations discussed in <xref
+        target="RFC5389"></xref> are to be taken into account. STUN
+        requires the 96 bits transaction ID to be uniformly and
+        randomly chosen from the interval 0 .. 2**96-1, and be
+        cryptographically strong. This is good enough security against
+        an off-path attacker. An on-path attacker can either inject a
+        fake response or modify the values in
+        DSCP_VALUE attribute to mislead the client
+        and server. This attack can be mitigated using STUN
+        authentication. As DSCP_VALUE is expected to
+        be used between peers using ICE, and ICE uses STUN short-term
+        credential mechanism the risk of on-path attack influencing
+        the messages is minimal. If DSCP_VALUE is
+        used with Allocate request then STUN long-term credential
+        mechanism or STUN Extension for Third-Party Authorization
+        <xref target="RFC7635"></xref> or (D)TLS connection can be
+        used between the TURN client and the TURN server to prevent
+        attackers from trying to impersonate a TURN server and sending
+        bogus DSCP_VALUE attribute in the Allocate
+        response. 
+      </t>
+      <t>
+        The information sent in any STUN packet if not encrypted can
+        potentially be observed passively and used for reconnaissance
+        and later attacks.
+      </t>
+    </section>
+
+    <section anchor="ack" title="Acknowledgements">
+      <t>
+        Someone that provided feedback?
+      </t>
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include="reference.RFC.2119"?>
+      <?rfc include="reference.RFC.5245"?>
+      <?rfc include="reference.RFC.5389"  ?>
+      <?rfc include="reference.RFC.5766"  ?>
+    </references>
+
+    <references title="Informative References">
+      <?rfc include="reference.RFC.7635"  ?>
+    </references>
+  </back>
+</rfc>
