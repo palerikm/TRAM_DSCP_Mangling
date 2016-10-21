@@ -76,7 +76,7 @@
         paths with intact DSCP markings.
       </t>
       <t>
-        (Just assigning a attribute from IANA is possible, but we
+        (Just assigning an attribute from IANA is possible, but we
         thought it was better to have a draft describing the attribute
         so everyone knows what it is)
       </t>
@@ -106,10 +106,7 @@
         benefit from detecting if the DSCP bits survives the rough
         journey across the Internet ocean.
       </t>
-      <t>
-        Epsum and so on
-      </t>
-
+     
       <section anchor="new_attribute" 
                title="DSCP VALUE attribute">
     
@@ -127,7 +124,7 @@
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    | Tx DSCP Value | Rx DSCP Value |          Reserverd            |
+    | Tx DSCP Value | Rx DSCP Value |          Reserved             |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     
              ]]></artwork>
@@ -184,7 +181,7 @@
           values of in the DSCP_VALUE attribute with values from the
           IP socket. The results could be used to detect and collect
           metrics regarding DSCP "survivability" on the Internet. It
-          could possible also influence ICE path decisions.  
+          could potentially also influence ICE path decisions.  
         </t>
         
       </section>
