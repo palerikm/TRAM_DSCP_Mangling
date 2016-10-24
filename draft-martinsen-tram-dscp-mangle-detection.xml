@@ -43,6 +43,19 @@
       </address>
     </author>
 
+    <author fullname="Colin Perkins" initials="C. S." surname="Perkins">
+      <organization>University of Glasgow</organization>
+      <address>
+        <postal>
+          <street>School of Computing Science</street>
+          <city>Glasgow</city>
+          <code>G12 8QQ</code>
+          <country>United Kingdom</country>
+        </postal>
+        <email>csp@csperkins.org</email>
+      </address>
+    </author>
+
     <date/>
     <workgroup>TRAM</workgroup>
 
@@ -106,6 +119,12 @@
         benefit from detecting if the DSCP bits survives the rough
         journey across the Internet ocean.
       </t>
+     <t>
+        RFC 6679 "Explicit Congestion Notification (ECN) for RTP over
+        UDP" <xref target="RFC6679"></xref> section 7.2.2 covers a
+        subset of the functionality defined in this draft. It covers
+        cases where the users only are interested in the ECN bits. 
+     </t>
      
       <section anchor="new_attribute" 
                title="DSCP VALUE attribute">
@@ -121,13 +140,12 @@
           <figure anchor="Figure1"
                   title="DSCP_VALUE attribute ">
             <artwork align="left"><![CDATA[
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    | Tx DSCP Value | Rx DSCP Value |          Reserved             |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    
-             ]]></artwork>
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |  Tx DSCP  |TxE|  Rx DSCP  |RxE|          Reserved             |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                 ]]></artwork>
           </figure>
         </t>
         <t>
@@ -135,11 +153,17 @@
         </t>
         <t>
           <list style="hanging">
-            <t hangText="Tx DSCP value:">The DSCP/TOS field value if the
+            <t hangText="Tx DSCP:">The DSCP field value if the
             IP header carrying the transmitted STUN packet. 
             </t>
-            <t hangText="Rx DSCP value:">The DSCP/DOS field value if the
-            IP header in received STUN packet on the same 5-tuple. 
+            <t hangText="TxE"> The ECT field of the IP header carrying
+            the transmitted STUN packet.
+            </t>
+            <t hangText="Rx DSCP value:">The DSCP field value of the
+            IP header in the received STUN packet on the same 5-tuple.
+            </t>
+            <t hangText="RxE"> The ECT field value of the IP header in
+            the received STUN packet on the same 5-tuple.
             </t>
           </list>
         </t>
@@ -245,6 +269,7 @@
       <?rfc include="reference.RFC.5245"?>
       <?rfc include="reference.RFC.5389"  ?>
       <?rfc include="reference.RFC.5766"  ?>
+      <?rfc include="reference.RFC.6679"  ?>
     </references>
 
     <references title="Informative References">
